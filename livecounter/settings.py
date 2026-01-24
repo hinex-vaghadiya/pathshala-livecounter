@@ -92,8 +92,8 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # },
-      "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL")
+       "default": dj_database_url.config(
+        default="postgresql://livecounter_postgress_1joq_user:8pQ8VBypx5PDpf8KDIraVjnfhbjT9xwq@dpg-d5q5l04oud1c73duf05g-a.oregon-postgres.render.com/livecounter_postgress_1joq"
     )
 }
 
