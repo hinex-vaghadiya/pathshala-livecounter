@@ -1,0 +1,2 @@
+from counter.models import Counter
+Counter.objects.create(value=0)

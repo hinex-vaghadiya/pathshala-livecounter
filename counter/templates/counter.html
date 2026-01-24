@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Counter</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+    }
+
+    .counter-box {
+      text-align: center;
+      background: rgba(255,255,255,0.15);
+      padding: 50px 70px;
+      border-radius: 15px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
+
+    #count {
+      font-size: 80px;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    .bump {
+      transform: scale(1.15);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="counter-box">
+    <h1>Total no of forms</h1>
+    <div id="count">0</div>
+  </div>
+
+  <script>
+    const countEl = document.getElementById("count");
+    let lastValue = null;
+
+    async function loadCount() {
+      const res = await fetch("/count/");
+      const data = await res.json();
+
+      if (lastValue !== data.value) {
+        countEl.textContent = data.value;
+        countEl.classList.add("bump");
+        setTimeout(() => countEl.classList.remove("bump"), 200);
+        lastValue = data.value;
+      }
+    }
+
+    loadCount();
+    setInterval(loadCount, 1000);
+  </script>
+
+</body>
+</html>
