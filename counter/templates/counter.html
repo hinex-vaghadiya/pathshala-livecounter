@@ -69,7 +69,7 @@
       color: #047857;
     }
 
-    /* Firecracker layer */
+    /* Firecracker container */
     #fireworks {
       position: fixed;
       inset: 0;
@@ -80,10 +80,10 @@
 
     .spark {
       position: absolute;
-      width: 7px;
-      height: 7px;
+      width: 12px;           /* bigger sparks */
+      height: 12px;          /* bigger sparks */
       border-radius: 50%;
-      animation: explode 900ms ease-out forwards;
+      animation: explode 1.5s ease-out forwards; /* longer duration */
     }
 
     @keyframes explode {
@@ -92,7 +92,7 @@
         opacity: 1;
       }
       100% {
-        transform: translate(var(--x), var(--y)) scale(0.2);
+        transform: translate(var(--x), var(--y)) scale(0.1);
         opacity: 0;
       }
     }
@@ -136,20 +136,21 @@
 </div>
 
 <script>
+  // Store previous counts to detect increase
   let previousData = {};
 
   function fireCrackers() {
     const container = document.getElementById("fireworks");
 
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 50; i++) { // more sparks for visibility
       const spark = document.createElement("div");
       spark.className = "spark";
 
       spark.style.left = Math.random() * window.innerWidth + "px";
       spark.style.top = Math.random() * window.innerHeight + "px";
 
-      spark.style.setProperty("--x", (Math.random() - 0.5) * 400 + "px");
-      spark.style.setProperty("--y", (Math.random() - 0.5) * 400 + "px");
+      spark.style.setProperty("--x", (Math.random() - 0.5) * 500 + "px");
+      spark.style.setProperty("--y", (Math.random() - 0.5) * 500 + "px");
 
       spark.style.background =
         ["#22c55e", "#3b82f6", "#eab308", "#ec4899", "#06b6d4"][
@@ -157,7 +158,7 @@
         ];
 
       container.appendChild(spark);
-      setTimeout(() => spark.remove(), 900);
+      setTimeout(() => spark.remove(), 1500); // slightly longer duration
     }
   }
 

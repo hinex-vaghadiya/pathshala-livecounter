@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Branch Counter</title>
-   <style>
+  <style>
     body {
       margin: 0;
       height: 100vh;
@@ -15,16 +15,16 @@
 
     .card {
       background: white;
-      padding: 45px 55px;          /* increased padding */
+      padding: 45px 55px;
       border-radius: 16px;
       box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      width: 650px;                /* increased width */
+      width: 700px;
     }
 
     h2 {
       text-align: center;
       margin-bottom: 35px;
-      font-size: 28px;             /* bigger heading */
+      font-size: 28px;
     }
 
     table {
@@ -34,7 +34,7 @@
     }
 
     th, td {
-      padding: 18px;               /* bigger cells */
+      padding: 18px;
       border-bottom: 1px solid #ddd;
       font-size: 18px;
     }
@@ -46,7 +46,7 @@
     }
 
     button {
-      padding: 8px 22px;           /* bigger buttons */
+      padding: 8px 22px;
       border: none;
       border-radius: 25px;
       font-size: 18px;
@@ -64,9 +64,21 @@
     }
 
     .total {
-      font-size: 28px;             /* bigger total number */
+      font-size: 20px;
       font-weight: bold;
       color: #333;
+    }
+
+    .grand-total-label {
+      font-weight: bold;
+      font-size: 20px;
+      text-align: right;
+    }
+
+    .grand-total {
+      font-weight: bold;
+      font-size: 22px;
+      color: #1e40af;
     }
   </style>
 </head>
@@ -104,6 +116,12 @@
       <td class="total" id="abrama">0</td>
     </tr>
 
+    <!-- Grand Total Row -->
+    <tr>
+      <td class="grand-total-label" colspan="3">All Branches Total</td>
+      <td class="grand-total" id="grand_total">0</td>
+    </tr>
+
   </table>
 </div>
 
@@ -117,9 +135,14 @@
     const res = await fetch("/counts/");
     const data = await res.json();
 
+    let total = 0;
+
     for (const branch in data) {
       document.getElementById(branch).innerText = data[branch];
+      total += data[branch];
     }
+
+    document.getElementById("grand_total").innerText = total;
   }
 
   loadCounts();
