@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Live Branch Counters</title>
-
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       background: linear-gradient(135deg, #43cea2, #185a9d);
       font-family: 'Segoe UI', sans-serif;
+      padding: 10px;
     }
 
     .card {
-      background: rgba(255,255,255,0.9);
-      padding: 50px 60px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 50px 40px;
+      /* bigger padding desktop */
       border-radius: 18px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
-      width: 700px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      width: 750px;
+      /* bigger card desktop */
+      max-width: 90%;
+      /* mobile 90% */
+      box-sizing: border-box;
       z-index: 1;
     }
 
     h2 {
       text-align: center;
-      margin-bottom: 35px;
+      margin-bottom: 25px;
       font-size: 32px;
       color: #134e4a;
     }
@@ -36,17 +42,17 @@
       text-align: center;
     }
 
-    th, td {
-      padding: 20px;
+    th,
+    td {
+      padding: 16px;
       border-bottom: 1px solid #e0e7ec;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     th {
       background: #0f766e;
       color: #ffffff;
-      font-size: 21px;
-      letter-spacing: 0.5px;
+      font-size: 18px;
     }
 
     td {
@@ -54,7 +60,7 @@
     }
 
     .count {
-      font-size: 34px;
+      font-size: 28px;
       font-weight: bold;
       color: #1e40af;
     }
@@ -64,12 +70,11 @@
     }
 
     .grand-total {
-      font-size: 38px;
+      font-size: 32px;
       font-weight: bold;
       color: #047857;
     }
 
-    /* Firecracker container */
     #fireworks {
       position: fixed;
       inset: 0;
@@ -80,10 +85,10 @@
 
     .spark {
       position: absolute;
-      width: 12px;           /* bigger sparks */
-      height: 12px;          /* bigger sparks */
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
-      animation: explode 1.5s ease-out forwards; /* longer duration */
+      animation: explode 1.5s ease-out forwards;
     }
 
     @keyframes explode {
@@ -91,9 +96,46 @@
         transform: translate(0, 0) scale(1);
         opacity: 1;
       }
+
       100% {
         transform: translate(var(--x), var(--y)) scale(0.1);
         opacity: 0;
+      }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .card {
+        width: 90vw;
+        /* 90% of viewport width */
+        height: 90vh;
+        /* 90% of viewport height */
+        padding: 20px;
+        overflow: auto;
+        /* scroll if table exceeds card height */
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 6px 14px;
+        font-size: 16px;
+      }
+
+      .total {
+        font-size: 18px;
+      }
+
+      .grand-total {
+        font-size: 18px;
       }
     }
   </style>
@@ -101,98 +143,75 @@
 
 <body>
 
-<!-- Firecracker Container -->
-<div id="fireworks"></div>
+  <div id="fireworks"></div>
 
-<div class="card">
-  <h2>Live Branch-wise Counters</h2>
+  <div class="card">
+    <h2>Live Branch-wise Counters</h2>
+    <table>
+      <tr>
+        <th>Branch</th>
+        <th>Total Forms</th>
+      </tr>
+      <tr>
+        <td>Mota Varachha</td>
+        <td class="count" id="mota_varachha">0</td>
+      </tr>
+      <tr>
+        <td>Hirabaug</td>
+        <td class="count" id="hirabaug">0</td>
+      </tr>
+      <tr>
+        <td>Abrama</td>
+        <td class="count" id="abrama">0</td>
+      </tr>
+      <tr class="total-row">
+        <td><strong>All Branches Total</strong></td>
+        <td class="grand-total" id="grand_total">0</td>
+      </tr>
+    </table>
+  </div>
 
-  <table>
-    <tr>
-      <th>Branch</th>
-      <th>Total Forms</th>
-    </tr>
+  <script>
+    let previousData = {};
 
-    <tr>
-      <td>Mota Varachha</td>
-      <td class="count" id="mota_varachha">0</td>
-    </tr>
-
-    <tr>
-      <td>Hirabaug</td>
-      <td class="count" id="hirabaug">0</td>
-    </tr>
-
-    <tr>
-      <td>Abrama</td>
-      <td class="count" id="abrama">0</td>
-    </tr>
-
-    <tr class="total-row">
-      <td><strong>All Branches Total</strong></td>
-      <td class="grand-total" id="grand_total">0</td>
-    </tr>
-  </table>
-</div>
-
-<script>
-  // Store previous counts to detect increase
-  let previousData = {};
-
-  function fireCrackers() {
-    const container = document.getElementById("fireworks");
-
-    for (let i = 0; i < 50; i++) { // more sparks for visibility
-      const spark = document.createElement("div");
-      spark.className = "spark";
-
-      spark.style.left = Math.random() * window.innerWidth + "px";
-      spark.style.top = Math.random() * window.innerHeight + "px";
-
-      spark.style.setProperty("--x", (Math.random() - 0.5) * 500 + "px");
-      spark.style.setProperty("--y", (Math.random() - 0.5) * 500 + "px");
-
-      spark.style.background =
-        ["#22c55e", "#3b82f6", "#eab308", "#ec4899", "#06b6d4"][
-          Math.floor(Math.random() * 5)
-        ];
-
-      container.appendChild(spark);
-      setTimeout(() => spark.remove(), 1500); // slightly longer duration
-    }
-  }
-
-  async function loadCounts() {
-    const res = await fetch("/counts/");
-    const data = await res.json();
-
-    let total = 0;
-    let increased = false;
-
-    for (const branch in data) {
-      const current = data[branch];
-      const previous = previousData[branch] ?? current;
-
-      document.getElementById(branch).innerText = current;
-      total += current;
-
-      if (current > previous) {
-        increased = true;
+    function fireCrackers() {
+      const container = document.getElementById("fireworks");
+      for (let i = 0; i < 50; i++) {
+        const spark = document.createElement("div");
+        spark.className = "spark";
+        spark.style.left = Math.random() * window.innerWidth + "px";
+        spark.style.top = Math.random() * window.innerHeight + "px";
+        spark.style.setProperty("--x", (Math.random() - 0.5) * 500 + "px");
+        spark.style.setProperty("--y", (Math.random() - 0.5) * 500 + "px");
+        spark.style.background = ["#22c55e", "#3b82f6", "#eab308", "#ec4899", "#06b6d4"][Math.floor(Math.random() * 5)];
+        container.appendChild(spark);
+        setTimeout(() => spark.remove(), 1500);
       }
     }
 
-    document.getElementById("grand_total").innerText = total;
+    async function loadCounts() {
+      const res = await fetch("/counts/");
+      const data = await res.json();
 
-    if (increased) {
-      fireCrackers();
+      let total = 0;
+      let increased = false;
+      for (const branch in data) {
+        const current = data[branch];
+        const previous = previousData[branch] ?? current;
+        document.getElementById(branch).innerText = current;
+        total += current;
+        if (current > previous) increased = true;
+      }
+
+      document.getElementById("grand_total").innerText = total;
+      if (increased) fireCrackers();
+      previousData = data;
     }
 
-    previousData = data;
-  }
-
-  loadCounts();
-  setInterval(loadCounts, 1000);
-</script>
+    loadCounts();
+    setInterval(loadCounts, 1000);
+  </script>
 
 </body>
+
 </html>

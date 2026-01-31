@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Branch Counter</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       background: linear-gradient(135deg, #667eea, #764ba2);
       font-family: 'Segoe UI', sans-serif;
+      padding: 10px;
     }
 
     .card {
       background: white;
-      padding: 45px 55px;
-      border-radius: 16px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-      width: 700px;
+      padding: 50px 40px;
+      /* bigger padding for desktop */
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      width: 750px;
+      /* bigger card for desktop */
+      max-width: 90%;
+      /* responsive for small screens */
+      box-sizing: border-box;
     }
 
     h2 {
@@ -33,7 +40,8 @@
       text-align: center;
     }
 
-    th, td {
+    th,
+    td {
       padding: 18px;
       border-bottom: 1px solid #ddd;
       font-size: 18px;
@@ -71,83 +79,117 @@
 
     .grand-total-label {
       font-weight: bold;
-      font-size: 20px;
       text-align: right;
+      font-size: 18px;
     }
 
     .grand-total {
       font-weight: bold;
-      font-size: 22px;
+      font-size: 20px;
       color: #1e40af;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .card {
+        width: 90vw;
+        /* 90% of viewport width */
+        height: 90vh;
+        /* 90% of viewport height */
+        padding: 20px;
+        overflow: auto;
+        /* scroll if table exceeds card height */
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 6px 14px;
+        font-size: 16px;
+      }
+
+      .total {
+        font-size: 18px;
+      }
+
+      .grand-total {
+        font-size: 18px;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div class="card">
-  <h2>Branch-wise Counter</h2>
+  <div class="card">
+    <h2>Branch-wise Counter</h2>
+    <table>
+      <tr>
+        <th>Branch</th>
+        <th>Increase</th>
+        <th>Decrease</th>
+        <th>Total</th>
+      </tr>
 
-  <table>
-    <tr>
-      <th>Branch</th>
-      <th>Increase</th>
-      <th>Decrease</th>
-      <th>Total</th>
-    </tr>
+      <tr>
+        <td>Mota Varachha</td>
+        <td><button class="inc" onclick="update('mota_varachha','inc')">+</button></td>
+        <td><button class="dec" onclick="update('mota_varachha','dec')">−</button></td>
+        <td class="total" id="mota_varachha">0</td>
+      </tr>
 
-    <tr>
-      <td>Mota Varachha</td>
-      <td><button class="inc" onclick="update('mota_varachha','inc')">+</button></td>
-      <td><button class="dec" onclick="update('mota_varachha','dec')">−</button></td>
-      <td class="total" id="mota_varachha">0</td>
-    </tr>
+      <tr>
+        <td>Hirabaug</td>
+        <td><button class="inc" onclick="update('hirabaug','inc')">+</button></td>
+        <td><button class="dec" onclick="update('hirabaug','dec')">−</button></td>
+        <td class="total" id="hirabaug">0</td>
+      </tr>
 
-    <tr>
-      <td>Hirabaug</td>
-      <td><button class="inc" onclick="update('hirabaug','inc')">+</button></td>
-      <td><button class="dec" onclick="update('hirabaug','dec')">−</button></td>
-      <td class="total" id="hirabaug">0</td>
-    </tr>
+      <tr>
+        <td>Abrama</td>
+        <td><button class="inc" onclick="update('abrama','inc')">+</button></td>
+        <td><button class="dec" onclick="update('abrama','dec')">−</button></td>
+        <td class="total" id="abrama">0</td>
+      </tr>
 
-    <tr>
-      <td>Abrama</td>
-      <td><button class="inc" onclick="update('abrama','inc')">+</button></td>
-      <td><button class="dec" onclick="update('abrama','dec')">−</button></td>
-      <td class="total" id="abrama">0</td>
-    </tr>
+      <tr>
+        <td class="grand-total-label" colspan="3">All Branches Total</td>
+        <td class="grand-total" id="grand_total">0</td>
+      </tr>
+    </table>
+  </div>
 
-    <!-- Grand Total Row -->
-    <tr>
-      <td class="grand-total-label" colspan="3">All Branches Total</td>
-      <td class="grand-total" id="grand_total">0</td>
-    </tr>
-
-  </table>
-</div>
-
-<script>
-  async function update(branch, action) {
-    await fetch(`/update/${branch}/${action}/`);
-    loadCounts();
-  }
-
-  async function loadCounts() {
-    const res = await fetch("/counts/");
-    const data = await res.json();
-
-    let total = 0;
-
-    for (const branch in data) {
-      document.getElementById(branch).innerText = data[branch];
-      total += data[branch];
+  <script>
+    async function update(branch, action) {
+      await fetch(`/update/${branch}/${action}/`);
+      loadCounts();
     }
 
-    document.getElementById("grand_total").innerText = total;
-  }
+    async function loadCounts() {
+      const res = await fetch("/counts/");
+      const data = await res.json();
 
-  loadCounts();
-  setInterval(loadCounts, 1000);
-</script>
+      let total = 0;
+      for (const branch in data) {
+        document.getElementById(branch).innerText = data[branch];
+        total += data[branch];
+      }
+
+      document.getElementById("grand_total").innerText = total;
+    }
+
+    loadCounts();
+    setInterval(loadCounts, 1000);
+  </script>
 
 </body>
+
 </html>
