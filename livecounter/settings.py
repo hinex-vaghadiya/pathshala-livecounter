@@ -88,13 +88,13 @@ WSGI_APPLICATION = 'livecounter.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # },
-       "default": dj_database_url.config(
-        default="postgresql://livecounter_postgress_1joq_user:8pQ8VBypx5PDpf8KDIraVjnfhbjT9xwq@dpg-d5q5l04oud1c73duf05g-a.oregon-postgres.render.com/livecounter_postgress_1joq"
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    #    "default": dj_database_url.config(
+    #     default="postgresql://livecounter_postgress_1joq_user:8pQ8VBypx5PDpf8KDIraVjnfhbjT9xwq@dpg-d5q5l04oud1c73duf05g-a.oregon-postgres.render.com/livecounter_postgress_1joq"
+    # )
 }
 
 

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Submit Form</title>
-  <style>
+  <title>Branch Counter</title>
+   <style>
     body {
       margin: 0;
       height: 100vh;
@@ -15,89 +15,116 @@
 
     .card {
       background: white;
-      padding: 40px 50px;
-      border-radius: 12px;
+      padding: 45px 55px;          /* increased padding */
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      width: 650px;                /* increased width */
+    }
+
+    h2 {
       text-align: center;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      margin-bottom: 35px;
+      font-size: 28px;             /* bigger heading */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 18px;               /* bigger cells */
+      border-bottom: 1px solid #ddd;
+      font-size: 18px;
+    }
+
+    th {
+      background: #667eea;
+      color: white;
+      font-size: 19px;
     }
 
     button {
-      font-size: 18px;
-      padding: 12px 30px;
+      padding: 8px 22px;           /* bigger buttons */
       border: none;
-      border-radius: 30px;
-      background: #667eea;
-      color: white;
+      border-radius: 25px;
+      font-size: 18px;
       cursor: pointer;
     }
 
-    /* POPUP */
-    .popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      background: rgba(0,0,0,0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
+    .inc {
+      background: #4CAF50;
+      color: white;
     }
 
-    .popup-box {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 10px;
-      text-align: center;
-      animation: scaleIn 0.3s ease;
+    .dec {
+      background: #f44336;
+      color: white;
     }
 
-    .popup-box h2 {
-      color: #4CAF50;
-      margin-bottom: 10px;
-    }
-
-    @keyframes scaleIn {
-      from { transform: scale(0.7); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    .total {
+      font-size: 28px;             /* bigger total number */
+      font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>Submit Form</h1>
-    <button onclick="increment()">Submit</button>
-  </div>
+<div class="card">
+  <h2>Branch-wise Counter</h2>
 
-  <!-- POPUP -->
-  <div class="popup" id="popup">
-    <div class="popup-box">
-      <h2>✔ Submitted</h2>
-      <p>Your form was submitted successfully</p>
-      <button onclick="closePopup()">OK</button>
-    </div>
-  </div>
+  <table>
+    <tr>
+      <th>Branch</th>
+      <th>Increase</th>
+      <th>Decrease</th>
+      <th>Total</th>
+    </tr>
 
-  <script>
-  async function increment() {
-    const res = await fetch("/increment/");
-    if (res.ok) {
-      const popup = document.getElementById("popup");
-      popup.style.display = "flex";
+    <tr>
+      <td>Mota Varachha</td>
+      <td><button class="inc" onclick="update('mota_varachha','inc')">+</button></td>
+      <td><button class="dec" onclick="update('mota_varachha','dec')">−</button></td>
+      <td class="total" id="mota_varachha">0</td>
+    </tr>
 
-      // auto close after 1 second
-      setTimeout(() => {
-        popup.style.display = "none";
-      }, 1000);
+    <tr>
+      <td>Hirabaug</td>
+      <td><button class="inc" onclick="update('hirabaug','inc')">+</button></td>
+      <td><button class="dec" onclick="update('hirabaug','dec')">−</button></td>
+      <td class="total" id="hirabaug">0</td>
+    </tr>
+
+    <tr>
+      <td>Abrama</td>
+      <td><button class="inc" onclick="update('abrama','inc')">+</button></td>
+      <td><button class="dec" onclick="update('abrama','dec')">−</button></td>
+      <td class="total" id="abrama">0</td>
+    </tr>
+
+  </table>
+</div>
+
+<script>
+  async function update(branch, action) {
+    await fetch(`/update/${branch}/${action}/`);
+    loadCounts();
+  }
+
+  async function loadCounts() {
+    const res = await fetch("/counts/");
+    const data = await res.json();
+
+    for (const branch in data) {
+      document.getElementById(branch).innerText = data[branch];
     }
   }
 
-  function closePopup() {
-    document.getElementById("popup").style.display = "none";
-  }
+  loadCounts();
+  setInterval(loadCounts, 1000);
 </script>
-
 
 </body>
 </html>
